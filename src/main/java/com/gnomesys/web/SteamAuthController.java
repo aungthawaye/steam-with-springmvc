@@ -2,7 +2,6 @@ package com.gnomesys.web;
 
 import java.util.Enumeration;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,17 +23,20 @@ public class SteamAuthController {
 		return new ModelAndView("home");
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
 	@RequestMapping(value = "/post_login_page", method = { RequestMethod.GET })
 	public ModelAndView postLoginPage(HttpServletRequest request) {
-		Map params = request.getParameterMap();
 		Enumeration enumeration = request.getParameterNames();
-		
-		while(enumeration.hasMoreElements()){
+
+		while (enumeration.hasMoreElements()) {
 			String key = (String) enumeration.nextElement();
 			log.debug(key + " \t " + request.getParameter(key));
 		}
-		return new ModelAndView("post_login");
+
+		String userId = this.steamOpenID.verify(request.getRequestURL().toString(), request.getParameterMap());
+		ModelAndView mav = new ModelAndView("post_login");
+		mav.addObject("steamId", userId);
+		return mav;
 	}
 
 	@RequestMapping(value = "/login_page", method = { RequestMethod.GET })

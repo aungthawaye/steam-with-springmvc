@@ -36,6 +36,7 @@ public class SteamAuthController {
 		String userId = this.steamOpenID.verify(request.getRequestURL().toString(), request.getParameterMap());
 		ModelAndView mav = new ModelAndView("post_login");
 		mav.addObject("steamId", userId);
+		mav.addObject("dota2AccountId", Long.valueOf(userId) & 1073741823);
 		return mav;
 	}
 
